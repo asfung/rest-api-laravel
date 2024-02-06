@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Quote;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class QuotesController extends Controller
 {
@@ -14,6 +15,18 @@ class QuotesController extends Controller
     }
 
     public function addQuote(Request $request){
+try {
+        $this->validate($request, [
+            'author' => 'required|string',
+            'quote' => 'required',
+        ]);
+    } catch (ValidationException $exception) {
+        return response()->json([
+            'message' => 'Data yang diminta tidak lengkap',
+            'errors' => $exception->validator->errors()
+        ], 422);
+    }
+
         $quote = new Quote();
         $quote->author = $request->author;
         $quote->quote = $request->quote;
@@ -21,6 +34,7 @@ class QuotesController extends Controller
         return response()->json([
             'message' => 'Quotes Ditambahkan!'
         ], 201);
+
     }
 
     public function findById($id){
