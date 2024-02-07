@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

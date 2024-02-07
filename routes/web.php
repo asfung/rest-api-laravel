@@ -30,10 +30,8 @@ Route::put('/api/v1/pegawai/{id}',[PegawaiController::class, 'updateById']);
 Route::delete('/api/v1/pegawai/{id}',[PegawaiController::class, 'deleteById']);
 
 // jwt token
-Route::controller(AuthController::class)->group(function () {
-  Route::post('auth/login', 'login');
-  Route::post('auth/register', 'register');
-  Route::post('auth/logout', 'logout');
-  Route::post('auth/refresh', 'refresh');
-  Route::post('auth/view-profile', 'viewProfile');
-});
+Route::post('/api/auth/login', [AuthController::class, 'login']);
+Route::post('/api/auth/register', [AuthController::class, 'register']);
+Route::post('/api/auth/logout', [AuthController::class, 'logout']);
+Route::post('/api/auth/refresh', [AuthController::class, 'refresh']);
+Route::post('/api/auth/view-profile', [AuthController::class, 'viewProfile']);
