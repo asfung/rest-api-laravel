@@ -15,21 +15,21 @@ class PegawaiController extends Controller
     }
 
     public function addPegawai(Request $request){
-try {
-        $this->validate($request, [
-            'nama' => 'required',
-            'jenis_kelamin' => 'required',
-            'kota' => 'required',
-            'agama' => 'required',
-            'posisi' => 'required',
-            'gaji' => 'required',
-        ]);
-    } catch (ValidationException $exception) {
-        return response()->json([
-            'message' => 'data yang diisi harus lengkap',
-            'errors' => $exception->validator->errors()
-        ], 404);
-    }
+        try {
+            $this->validate($request, [
+                'nama' => 'required',
+                'jenis_kelamin' => 'required',
+                'kota' => 'required',
+                'agama' => 'required',
+                'posisi' => 'required',
+                'gaji' => 'required',
+            ]);
+        } catch (ValidationException $exception) {
+            return response()->json([
+                'message' => 'data yang diisi harus lengkap',
+                'errors' => $exception->validator->errors()
+            ], 404);
+        }
 
         $pegawai = new Pegawai();
         $pegawai->nama = $request->nama;
