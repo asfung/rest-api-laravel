@@ -8,11 +8,12 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */
+    */
     public function up(): void
     {
-        Schema::create('pegawais', function (Blueprint $table) {
+            Schema::create('pegawais', function (Blueprint $table) {
             $table->id();
+            $table->string('file')->nullable();
             $table->string('nama');
             $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
             $table->string('kota');

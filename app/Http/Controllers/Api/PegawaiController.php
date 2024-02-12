@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class PegawaiController extends Controller
@@ -23,6 +24,7 @@ class PegawaiController extends Controller
                 'agama' => 'required',
                 'posisi' => 'required',
                 'gaji' => 'required',
+                'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -38,6 +40,14 @@ class PegawaiController extends Controller
         $pegawai->agama = $request->agama;
         $pegawai->gaji = $request->gaji;
         $pegawai->posisi = $request->posisi;
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('photo', $filename, 'public');
+            $pegawai->file = $path; 
+        }
+
         $pegawai->save();
         return response()->json([
             'message' => 'pegawai Ditambahkan!'
@@ -59,12 +69,26 @@ class PegawaiController extends Controller
     public function updateById(Request $request, $id){
         if(Pegawai::where('id', $id)->exists()){
             $pegawai = Pegawai::find($id);
+
+            $oldFilePath = $pegawai->file;
+
             $pegawai->nama = is_null($request->nama) ? $pegawai->nama : $request->nama;
             $pegawai->jenis_kelamin = is_null($request->jenis_kelamin) ? $pegawai->jenis_kelamin : $request->jenis_kelamin;
             $pegawai->kota = is_null($request->kota) ? $pegawai->kota : $request->kota;
             $pegawai->agama = is_null($request->agama) ? $pegawai->agama : $request->agama;
             $pegawai->gaji = is_null($request->gaji) ? $pegawai->gaji : $request->gaji;
             $pegawai->posisi = is_null($request->posisi) ? $pegawai->posisi : $request->posisi;
+
+            if ($request->hasFile('file')) {
+                if (Storage::exists($oldFilePath)) {
+                    Storage::delete($oldFilePath);
+                }
+
+                $file = $request->file('file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('photo', $filename, 'public');
+                $pegawai->file = $path; 
+            }
             $pegawai->save();
             return response()->json([
                 'message' => 'pegawai telah diupdate!'
@@ -80,6 +104,12 @@ class PegawaiController extends Controller
         $isExist = Pegawai::where('id', $id)->exists();
         if($isExist){
             $pegawai = Pegawai::find($id);
+            $filePath = $pegawai->file;
+
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+
             $pegawai->delete();
             return response()->json([
                 'message' => 'pegawai terhapus!'
