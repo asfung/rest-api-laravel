@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama');
             $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
             $table->string('provinsi');
-            $table->string('provinsiId');
+            // $table->string('provinsiId');
             $table->string('agama');
             $table->string('posisi');
             $table->integer('gaji');

@@ -21,7 +21,7 @@ class PegawaiController extends Controller
                 'nama' => 'required',
                 'jenis_kelamin' => 'required',
                 'provinsi' => 'required',
-                'provinsiId' => 'required',
+                // 'provinsiId' => 'required',
                 'agama' => 'required',
                 'posisi' => 'required',
                 'gaji' => 'required',
@@ -38,7 +38,7 @@ class PegawaiController extends Controller
         $pegawai->nama = $request->nama;
         $pegawai->jenis_kelamin = $request->jenis_kelamin;
         $pegawai->provinsi = $request->provinsi;
-        $pegawai->provinsiId = $request->provinsiId;
+        // $pegawai->provinsiId = $request->provinsiId;
         $pegawai->agama = $request->agama;
         $pegawai->gaji = $request->gaji;
         $pegawai->posisi = $request->posisi;
@@ -75,7 +75,7 @@ class PegawaiController extends Controller
             $pegawai->nama = is_null($request->nama) ? $pegawai->nama : $request->nama;
             $pegawai->jenis_kelamin = is_null($request->jenis_kelamin) ? $pegawai->jenis_kelamin : $request->jenis_kelamin;
             $pegawai->provinsi = is_null($request->provinsi) ? $pegawai->provinsi : $request->provinsi;
-            $pegawai->provinsiId = is_null($request->provinsiId) ? $pegawai->provinsiId : $request->provinsiId;
+            // $pegawai->provinsiId = is_null($request->provinsiId) ? $pegawai->provinsiId : $request->provinsiId;
             $pegawai->agama = is_null($request->agama) ? $pegawai->agama : $request->agama;
             $pegawai->gaji = is_null($request->gaji) ? $pegawai->gaji : $request->gaji;
             $pegawai->posisi = is_null($request->posisi) ? $pegawai->posisi : $request->posisi;
