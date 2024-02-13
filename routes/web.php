@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\QuotesController;
 use App\Http\Controllers\Api\PegawaiController;
+use App\Http\Controllers\WilayahIndonesiaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,3 +37,9 @@ Route::post('/api/auth/register', [AuthController::class, 'register']);
 Route::post('/api/auth/logout', [AuthController::class, 'logout']);
 Route::post('/api/auth/refresh', [AuthController::class, 'refresh']);
 Route::post('/api/auth/view-profile', [AuthController::class, 'viewProfile']);
+
+
+Route::get('/api/provinces', [WilayahIndonesiaController::class, 'provinces']);
+Route::get('/api/cities/{id}', [WilayahIndonesiaController::class, 'cities']);
+Route::get('/api/districts/{id}', [WilayahIndonesiaController::class, 'districts']);
+Route::get('/api/villages/{id}', [WilayahIndonesiaController::class, 'villages']);
