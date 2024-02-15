@@ -104,9 +104,9 @@ class PegawaiController extends Controller
             $pegawai = Pegawai::find($id);
             $filePath = $pegawai->file;
 
-            if (Storage::exists($filePath)) {
-                Storage::delete($filePath);
-            }
+            // if (Storage::exists($filePath)) {
+            //     Storage::delete($filePath);
+            // }
 
             $pegawai->delete();
             return response()->json([
