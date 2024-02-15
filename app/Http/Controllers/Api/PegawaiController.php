@@ -43,11 +43,20 @@ class PegawaiController extends Controller
         $pegawai->gaji = $request->gaji;
         $pegawai->posisi = $request->posisi;
 
-        if ($request->hasFile('file')) {
+        // if ($request->hasFile('file')) {
+        //     $file = $request->file('file');
+        //     $filename = time() . '_' . $file->getClientOriginalName();
+        //     $path = $file->storeAs('photo', $filename, 'public');
+        //     $pegawai->file = $path; 
+        // }
+        if (is_string($request->file)) {
+            $pegawai->file = $request->file;
+        } elseif ($request->hasFile('file')) {
+            // Handle the file upload
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('photo', $filename, 'public');
-            $pegawai->file = $path; 
+            $pegawai->file = $path;
         }
 
         $pegawai->save();
