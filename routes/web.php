@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AgamaController;
+use App\Http\Controllers\CareersController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\QuotesController;
 use App\Http\Controllers\Api\PegawaiController;
@@ -43,3 +45,11 @@ Route::get('/api/provinces', [WilayahIndonesiaController::class, 'provinces']);
 Route::get('/api/cities/{id}', [WilayahIndonesiaController::class, 'cities']);
 Route::get('/api/districts/{id}', [WilayahIndonesiaController::class, 'districts']);
 Route::get('/api/villages/{id}', [WilayahIndonesiaController::class, 'villages']);
+
+Route::get('/api/religions', [AgamaController::class, 'findAll']);
+Route::get('/api/religion/{id}', [AgamaController::class, 'findById']);
+
+Route::get('/api/careers', [CareersController::class, 'findAll']);
+Route::get('/api/career/{id}', [CareersController::class, 'findById']);
+
+Route::get('/api/careers_parent', [CareersController::class, 'findAllParent']);
