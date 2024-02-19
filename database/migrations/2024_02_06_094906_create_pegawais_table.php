@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('agama');
             $table->string('posisi');
             $table->integer('gaji');
+            $table->string('id_posisi')->nullable();
             $table->timestamps();
         });
     }

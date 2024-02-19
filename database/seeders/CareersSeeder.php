@@ -14,19 +14,27 @@ class CareersSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['career_code' => 'P1', 'name' => 'SOFTWARE ENGINEER'],
-            ['career_code' => 'P1', 'name' => 'QA ENGINEER'],
-            ['career_code' => 'P1', 'name' => 'DEVOPS'],
-            ['career_code' => 'P1', 'name' => 'FULLSTACK ENGINEER'],
-            ['career_code' => 'P1', 'name' => 'MACHINE LEARNING ENGINEER'],
-            ['career_code' => 'P1', 'name' => 'MECHANICAL ENGINEER'],
+            // the parent column
+            ['career_code' => 'P1', 'name' => 'TECHNOLOGY', 'tree_lvl' => '1', 'id_tree' => '01'],
+            ['career_code' => 'P2', 'name' => 'BUSINESS', 'tree_lvl' => '1', 'id_tree' => '02'],
+            ['career_code' => 'P3', 'name' => 'HUMAN RESOURCE', 'tree_lvl' => '1', 'id_tree' => '03'],
 
-            ['career_code' => 'P2', 'name' => 'SALES MARKETING'],
-            ['career_code' => 'P2', 'name' => 'CHIEF MARKETING'],
-            ['career_code' => 'P2', 'name' => 'LEAD BUSINESS'],
-            ['career_code' => 'P2', 'name' => 'PRODUCT MANAGER'],
+            ['career_code' => 'P1', 'name' => 'SOFTWARE ENGINEER', 'tree_lvl' => '2', 'id_tree' => '0101'],
+            ['career_code' => 'P1', 'name' => 'BACKEND DEV', 'tree_lvl' => '2', 'id_tree' => '010101'],
+            ['career_code' => 'P1', 'name' => 'FRONTEND DEV', 'tree_lvl' => '2', 'id_tree' => '010102'],
 
-            ['career_code' => 'P3', 'name' => 'PRODUCT MANAGER'],
+            ['career_code' => 'P1', 'name' => 'QA ENGINEER', 'tree_lvl' => '2', 'id_tree' => '0102'],
+            ['career_code' => 'P1', 'name' => 'DEVOPS', 'tree_lvl' => '2', 'id_tree' => '0103'],
+            ['career_code' => 'P1', 'name' => 'FULLSTACK ENGINEER', 'tree_lvl' => '2', 'id_tree' => '0104'],
+            ['career_code' => 'P1', 'name' => 'MACHINE LEARNING ENGINEER', 'tree_lvl' => '2', 'id_tree' => '0105'],
+            ['career_code' => 'P1', 'name' => 'MECHANICAL ENGINEER', 'tree_lvl' => '2', 'id_tree' => '0106'],
+
+            ['career_code' => 'P2', 'name' => 'SALES MARKETING', 'tree_lvl' => '2', 'id_tree' => '0201'],
+            ['career_code' => 'P2', 'name' => 'CHIEF MARKETING', 'tree_lvl' => '2', 'id_tree' => '0202'],
+            ['career_code' => 'P2', 'name' => 'LEAD BUSINESS', 'tree_lvl' => '2', 'id_tree' => '0203'],
+            ['career_code' => 'P2', 'name' => 'PRODUCT MANAGER', 'tree_lvl' => '2', 'id_tree' => '0204'],
+
+            ['career_code' => 'P3', 'name' => 'PRODUCT MANAGER', 'tree_lvl' => '2', 'id_tree' => '0301'],
         ];
 
         foreach($data as $key => $value){

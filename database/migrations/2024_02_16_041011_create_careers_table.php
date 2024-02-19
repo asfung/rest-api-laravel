@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('career_code');
             $table->string('name');
+            $table->string('tree_lvl');
+            $table->string('id_tree');
             $table->timestamps();
         });
     }

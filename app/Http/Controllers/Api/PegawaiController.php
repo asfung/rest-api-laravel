@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Careers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use PhpParser\Node\Stmt\Foreach_;
 
 class PegawaiController extends Controller
 {
@@ -25,7 +27,7 @@ class PegawaiController extends Controller
                 'agama' => 'required',
                 'posisi' => 'required',
                 'gaji' => 'required',
-                'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+                'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
@@ -47,12 +49,18 @@ class PegawaiController extends Controller
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('photo', $filename, 'public');
-            $pegawai->file = $path; 
+            $pegawai->file = $path;
+        }
+
+        $getIdPosisi = Careers::where('name', $request->posisi)->get();
+        foreach($getIdPosisi as $value){
+            $pegawai->id_posisi = $value->id;
         }
 
         $pegawai->save();
         return response()->json([
-            'message' => 'pegawai Ditambahkan!'
+            'message' => 'pegawai Ditambahkan!',
+            'idk' => $getIdPosisi
         ], 201);
 
     }
@@ -84,12 +92,16 @@ class PegawaiController extends Controller
                 $file = $request->file('file');
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $path = $file->storeAs('photo', $filename, 'public');
-                $pegawai->file = $path; 
+                $pegawai->file = $path;
             }
+
+            $getIdPosisi = Careers::where('name', $request->posisi)->get();
+            $pegawai->id_posisi = $getIdPosisi[0]->id;
 
             $pegawai->save();
             return response()->json([
-                'message' => 'pegawai telah diupdate!'
+                'message' => 'pegawai telah diupdate!',
+                'idk' => $getIdPosisi[0]->id
             ], 200);
         }else{
             return response()->json([
