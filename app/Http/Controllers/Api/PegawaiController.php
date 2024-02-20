@@ -6,13 +6,36 @@ use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Careers;
+use App\Models\CareerTest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use PhpParser\Node\Stmt\Foreach_;
 
 class PegawaiController extends Controller
 {
-    public function findAll(){
+
+
+    public function findAll(Request $request){
+        // $perPage = $request->query('pagePage', 3); 
+        // $pegawai = Pegawai::paginate($perPage);
+    
+        // return response()->json($pegawai);
+
+        $perPage = $request->query('pagePage', 5);  
+
+        $pegawai = Pegawai::paginate($perPage);
+
+        $response = [
+            'current_page' => $pegawai->currentPage(),
+            'total_items' => $pegawai->total(),
+            'data' => $pegawai->items(),
+        ];
+
+        return response()->json($response);
+    }
+
+    public function forcingAll(){
         $pegawai = Pegawai::all();
         return response()->json($pegawai);
     }
@@ -52,7 +75,8 @@ class PegawaiController extends Controller
             $pegawai->file = $path;
         }
 
-        $getIdPosisi = Careers::where('name', $request->posisi)->get();
+        // $getIdPosisi = Careers::where('name', $request->posisi)->get();
+        $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
         foreach($getIdPosisi as $value){
             $pegawai->id_posisi = $value->id;
         }
@@ -95,7 +119,8 @@ class PegawaiController extends Controller
                 $pegawai->file = $path;
             }
 
-            $getIdPosisi = Careers::where('name', $request->posisi)->get();
+            // $getIdPosisi = Careers::where('name', $request->posisi)->get();
+            $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
             $pegawai->id_posisi = $getIdPosisi[0]->id;
 
             $pegawai->save();
@@ -131,4 +156,88 @@ class PegawaiController extends Controller
         }
     }
 
+    public function search(Request $request){
+        $searchNama = $request->input('nama');
+        
+        if (empty($searchNama)) {
+            return response()->json([
+                'message' => 'Search query is empty',
+            ], 400);
+        }
+
+        $pegawai = Pegawai::where('nama', 'like', "%$searchNama%")->get();
+
+        if ($pegawai->isEmpty()) {
+            return response()->json([
+                'message' => 'Pegawai not found with the given search query',
+            ], 404);
+        }
+
+        return response()->json($pegawai);
+    }
+
+    public function searchPegawai(Request $request){
+        $searchNama = $request->input('nama');
+        $searchPosisi = $request->input('id_posisi');
+        $query = Pegawai::query();
+
+        if (!empty($searchNama)) {
+            $query->where('nama', 'like', "%$searchNama%");
+        }
+
+        if (!empty($searchPosisi)) {
+            $query->where('id_posisi', $searchPosisi);
+        }
+
+        $pegawai = $query->get();
+
+        if ($pegawai->isEmpty()) {
+            return response()->json([
+                'message' => 'Pegawai not found with the given search parameters',
+            ], 404);
+        }
+
+        return response()->json($pegawai);
+    }
+
+
 }
+
+
+/*
+
+        $request->validate([
+            'nama' => 'nullable',
+            'posisi' => 'nullable'
+        ]);
+
+        $searchNama = $request->input('nama');
+        $searchPosisi = $request->input('id_posisi');
+
+        $pegawaiQuery = Pegawai::query();
+        $posisiQuery = CareerTest::query();
+
+        if (!empty($searchNama)) {
+            $pegawaiQuery->where('nama', 'like', "%$searchNama%");
+        }
+
+        if (!empty($searchPosisi)) {
+            $posisiQuery->where('id', $searchPosisi);
+        }
+
+        $pegawai = $pegawaiQuery->get();
+        $posisi = $posisiQuery->get();
+
+        if ($pegawai->isEmpty()) {
+            return response()->json([
+                'message' => 'Pegawai not found with the given search parameters',
+            ], 404);
+        }
+
+        return response()->json([
+            'pegawai' => $pegawai,
+            'posisi' => $posisi
+        ]);
+
+
+*/

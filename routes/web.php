@@ -26,11 +26,14 @@ Route::put('/api/v1/quotes/{id}',[QuotesController::class, 'updateById']);
 Route::delete('/api/v1/quotes/{id}',[QuotesController::class, 'deleteById']);
 
 Route::middleware('auth:api')->group(function (){
+  Route::get('/api/v1/pegawai/search',[PegawaiController::class, 'search']);
+  Route::get('/api/v1/pegawai/cari',[PegawaiController::class, 'searchPegawai']);
   Route::get('/api/v1/pegawai',[PegawaiController::class, 'findAll']);
   Route::post('/api/v1/pegawai',[PegawaiController::class, 'addPegawai']);
   Route::get('/api/v1/pegawai/{id}',[PegawaiController::class, 'findById']);
   Route::put('/api/v1/pegawai/{id}',[PegawaiController::class, 'updateById']);
   Route::delete('/api/v1/pegawai/{id}',[PegawaiController::class, 'deleteById']);
+  Route::get('/api/v1/pegawais',[PegawaiController::class, 'forcingAll']);
 });
 
 // jwt token
@@ -50,6 +53,12 @@ Route::get('/api/religions', [AgamaController::class, 'findAll']);
 Route::get('/api/religion/{id}', [AgamaController::class, 'findById']);
 
 Route::get('/api/careers', [CareersController::class, 'findAll']);
-Route::get('/api/career/{id}', [CareersController::class, 'findById']);
+Route::get('/api/career', [CareersController::class, 'findById']);
 
 Route::get('/api/careers_parent', [CareersController::class, 'findAllParent']);
+
+// beta 
+Route::get('/api/career_test', [CareersController::class, 'getCareers']);
+
+Route::get('/api/pegawai/cari', [CareersController::class, 'searchPegawai']);
+

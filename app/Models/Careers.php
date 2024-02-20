@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Careers extends Model
 {
     use HasFactory;
-    protected $fillable = ['career_code', 'name'];
+    protected $fillable = ['career_code', 'name', 'tree_lvl', 'id_tree'];
 }
