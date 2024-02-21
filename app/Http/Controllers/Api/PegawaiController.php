@@ -79,6 +79,7 @@ class PegawaiController extends Controller
         $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
         foreach($getIdPosisi as $value){
             $pegawai->id_posisi = $value->id;
+            $pegawai->career_code = $value->career_code;
         }
 
         $pegawai->save();
@@ -122,6 +123,7 @@ class PegawaiController extends Controller
             // $getIdPosisi = Careers::where('name', $request->posisi)->get();
             $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
             $pegawai->id_posisi = $getIdPosisi[0]->id;
+            $pegawai->career_code = $getIdPosisi[0]->career_code;
 
             $pegawai->save();
             return response()->json([
@@ -179,21 +181,34 @@ class PegawaiController extends Controller
     public function searchPegawai(Request $request){
         $searchNama = $request->input('nama');
         $searchPosisi = $request->input('id_posisi');
+        $perPage = $request->input('per_page', 5);
+
         $query = Pegawai::query();
 
         if (!empty($searchNama)) {
             $query->where('nama', 'like', "%$searchNama%");
         }
 
+        // if (!empty($searchPosisi)) {
+        //     $query->where('id_posisi', $searchPosisi);
+        // }
         if (!empty($searchPosisi)) {
-            $query->where('id_posisi', $searchPosisi);
+            if (strlen($searchPosisi) === 1) {
+                // jika 1, dengan career code yang sama
+                $careerTestItems = CareerTest::where('parent_id', $searchPosisi)->pluck('career_code');
+                $query->whereIn('career_code', $careerTestItems);
+            } else {
+                $query->where('id_posisi', $searchPosisi);
+            }
         }
 
-        $pegawai = $query->get();
+        // $pegawai = $query->get();
+        $pegawai = $query->paginate($perPage);
 
         if ($pegawai->isEmpty()) {
             return response()->json([
                 'message' => 'Pegawai not found with the given search parameters',
+                'debug' => dd($pegawai)
             ], 404);
         }
 

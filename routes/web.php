@@ -60,5 +60,10 @@ Route::get('/api/careers_parent', [CareersController::class, 'findAllParent']);
 // beta 
 Route::get('/api/career_test', [CareersController::class, 'getCareers']);
 
-Route::get('/api/pegawai/cari', [CareersController::class, 'searchPegawai']);
+Route::get('/api/pegawai/mencari', [CareersController::class, 'searchPegawai']);
 
+// test
+Route::get('/api/pegawai/test1/{name}', [CareersController::class, 'getDescendants']);
+
+Route::get('/software-engineer/{id}', [CareersController::class, 'getSoftwareEngineerWithChildren']);
+Route::get('/test2', [CareersController::class, 'searchPegawaiPosisi']);
