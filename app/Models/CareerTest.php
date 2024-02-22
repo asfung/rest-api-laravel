@@ -14,8 +14,8 @@ class CareerTest extends Model
     // {
     //     return $this->hasMany(CareerTest::class, 'parent_id');
     // }
-    public function children()
-    {
-        return $this->hasMany(CareerTest::class, 'parent_id');
-    }
+    // public function children()
+    // {
+    //     return $this->hasMany(CareerTest::class, 'parent_id');
+    // }
 }

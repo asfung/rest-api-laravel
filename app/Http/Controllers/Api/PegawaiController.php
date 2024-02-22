@@ -78,7 +78,7 @@ class PegawaiController extends Controller
         // $getIdPosisi = Careers::where('name', $request->posisi)->get();
         $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
         foreach($getIdPosisi as $value){
-            $pegawai->id_posisi = $value->id;
+            $pegawai->id_posisi = $value->id_tree;
             $pegawai->career_code = $value->career_code;
         }
 
@@ -122,7 +122,7 @@ class PegawaiController extends Controller
 
             // $getIdPosisi = Careers::where('name', $request->posisi)->get();
             $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
-            $pegawai->id_posisi = $getIdPosisi[0]->id;
+            $pegawai->id_posisi = $getIdPosisi[0]->id_tree;
             $pegawai->career_code = $getIdPosisi[0]->career_code;
 
             $pegawai->save();
@@ -193,13 +193,14 @@ class PegawaiController extends Controller
         //     $query->where('id_posisi', $searchPosisi);
         // }
         if (!empty($searchPosisi)) {
-            if (strlen($searchPosisi) === 1) {
-                // jika 1, dengan career code yang sama
-                $careerTestItems = CareerTest::where('parent_id', $searchPosisi)->pluck('career_code');
-                $query->whereIn('career_code', $careerTestItems);
-            } else {
-                $query->where('id_posisi', $searchPosisi);
-            }
+            // if (strlen($searchPosisi) === 1) {
+            //     // jika 1, dengan career code yang sama
+            //     $careerTestItems = CareerTest::where('parent_id', $searchPosisi)->pluck('career_code');
+            //     $query->whereIn('career_code', $careerTestItems);
+            // } else {
+            //     $query->where('id_posisi', $searchPosisi);
+            // }
+            $query->where('id_posisi', 'like', "$searchPosisi%");
         }
 
         // $pegawai = $query->get();

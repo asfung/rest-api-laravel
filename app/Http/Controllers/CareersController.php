@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class CareersController extends Controller
 {
     public function findAll(){
-        return Careers::all();
+        return CareerTest::all();
     }
 
     // public function findById($id){
@@ -45,7 +45,7 @@ class CareersController extends Controller
         $tree = [];
         foreach ($data as $item) {
             if ($item['parent_id'] == $parentId) {
-                $children = $this->buildTree($data, $item['id']);
+                $children = $this->buildTree($data, $item['id_tree']);
 
                 if ($children) {
                     $item['children'] = $children;
@@ -127,27 +127,28 @@ class CareersController extends Controller
         }
 
         if (!empty($searchPosisi)) {
-            if (strlen($searchPosisi) === 1) {
-                // If id_posisi has length 1, select from CareerTest where parent_id is $searchPosisi
-                $careerTestItems = CareerTest::where('parent_id', $searchPosisi)->pluck('career_code');
-                $query->whereIn('career_code', $careerTestItems);
-            } elseif (strlen($searchPosisi) === 2) {
-                $isParentIdHasTwoLength = CareerTest::where('id', $searchPosisi)->first();
+            // if (strlen($searchPosisi) === 1) {
+            //     // If id_posisi has length 1, select from CareerTest where parent_id is $searchPosisi
+            //     $careerTestItems = CareerTest::where('parent_id', $searchPosisi)->pluck('career_code');
+            //     $query->whereIn('career_code', $careerTestItems);
+            // } elseif (strlen($searchPosisi) === 2) {
+            //     $isParentIdHasTwoLength = CareerTest::where('id', $searchPosisi)->first();
 
-                if ($isParentIdHasTwoLength && $isParentIdHasTwoLength->tree_lvl === '2') {
-                    // If the id_posisi with length 2 has tree_lvl 3, retrieve all records with tree_lvl 2 and 3
-                    $query->where(function ($subquery) use ($isParentIdHasTwoLength, $searchPosisi) {
-                        $subquery->where('id_posisi', $isParentIdHasTwoLength->parent_id)
-                            ->orWhere('id_posisi', $searchPosisi);
-                    });
-                } else {
-                    // If the id_posisi with length 2 does not have tree_lvl 3, simply filter by id_posisi
-                    $query->where('id_posisi', $searchPosisi);
-                }
+            //     if ($isParentIdHasTwoLength && $isParentIdHasTwoLength->tree_lvl === '2') {
+            //         // If the id_posisi with length 2 has tree_lvl 3, retrieve all records with tree_lvl 2 and 3
+            //         $query->where(function ($subquery) use ($isParentIdHasTwoLength, $searchPosisi) {
+            //             $subquery->where('id_posisi', $isParentIdHasTwoLength->parent_id)
+            //                 ->orWhere('id_posisi', $searchPosisi);
+            //         });
+            //     } else {
+            //         // If the id_posisi with length 2 does not have tree_lvl 3, simply filter by id_posisi
+            //         $query->where('id_posisi', $searchPosisi);
+            //     }
 
-            } else {
-                $query->where('id_posisi', $searchPosisi);
-            }
+            // } else {
+            //     $query->where('id_posisi', $searchPosisi);
+            // }
+            $query->where('id_posisi', 'like', "$searchPosisi%");
         }
 
         $perPage = $request->input('per_page', 10);
@@ -162,10 +163,94 @@ class CareersController extends Controller
         return response()->json($pegawai);
     }
 
+    public function addCareer(Request $request){
+        $name = strtoupper($request->input('name'));
+        $id = $request->input('id_tree');
+        $current_idTree = null;
+        $current_idTree_forParent = null;
+
+        // strtoupper($name);
+
+        // $isExist = CareerTest::where('name', $name)->get();
+        $isExist = CareerTest::all();
+        foreach($isExist as $exist){
+            if($exist->name === $name){
+                return response()->json([
+                    'message' => 'name is already taken'
+                ], 404);
+            }
+        }
+
+        // for parent field only
+        $forParent = CareerTest::where('parent_id', null)->get();
+        foreach($forParent as $parent){
+            $current_idTree_forParent = $parent->id;
+        }
+
+        if($id === null){
+            return response()->json([
+                'message' => $name . ' akan dijadikan parent',
+                'current id_tree' => $current_idTree_forParent,
+                'debug' => $forParent,
+            ], 200);
+        }
 
 
 
+        $requirementField = CareerTest::where('id_tree', $id)->first();
+        $requirementField_name = $requirementField->name;
+        $requirementField_parentId = $requirementField->parent_id;
+        $requirementField_career_code = $requirementField->career_code;
+        $requirementField_idTree = $requirementField->id_tree;
+        $requirementField_treeLvl = $requirementField->tree_lvl;
 
+
+        $treeLvl_toInt = (int) $requirementField_treeLvl;
+        $idTree_toInt = (int) $requirementField_idTree;
+        $increment_treelvl = ++$treeLvl_toInt;
+        $current_career_idTree = CareerTest::where('id_tree', 'like', "$id%")->where('tree_lvl', $increment_treelvl)->get();
+
+        // get current number
+        foreach($current_career_idTree as $career){
+            $current_idTree = $career->id_tree;
+        }
+
+        //increment the id_tree
+        $nextNumber = str_pad((int) $current_idTree + 1, strlen($current_idTree), '0', STR_PAD_LEFT);
+        $id_tree_currentIncrement = sprintf('%s', $nextNumber);
+        
+
+        // we need
+        // career code is requirementField_career_code
+        // $name to be name to CareerTest
+        // $id is to be parent_id to CareerTest
+        // $increment_treeLvl to be tree_lvl to CareerTest or $treeLvl_toInt
+        // id_tree from CareerTest will be $current_idTree + 1
+
+        // CareerTest::create([
+        //     'career_code' => $requirementField_career_code,
+        //     'name' => $name,
+        //     'parent_id' => $id,
+        //     'tree_lvl' => $treeLvl_toInt,
+        //     'id_tree' => $id_tree_currentIncrement
+        // ]);
+
+        return response()->json([
+            'debug' => $requirementField,
+            'maka' => [
+                'tipe tree_lvl ' => gettype($treeLvl_toInt),
+                'tree level sebelum ' . $treeLvl_toInt => 'jadi ' . $increment_treelvl,
+                'current id_tree of ' . $requirementField_idTree => $current_idTree,
+                'new id tree' =>  $id_tree_currentIncrement,
+                // 'saat ini ' . $current_idTree => 'yang baru ' . ++$current_idTree, it will be +2 if before has increment too
+                'parent id' => $id,
+                'career code' => $requirementField_career_code,
+                'nama' => $name
+            ]
+            // 'message' => 'berhasil menambahkan ' . $name
+
+        ], 201);
+    }
 
 
 
