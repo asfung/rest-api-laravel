@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravolt/indonesia": "^0.34.0",
+        "maatwebsite/excel": "^1.1",
         "php-open-source-saver/jwt-auth": "^2.1"
     },
     "require-dev": {

@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function (){
   Route::delete('/api/v1/pegawai/{id}',[PegawaiController::class, 'deleteById']);
   Route::get('/api/v1/pegawais',[PegawaiController::class, 'forcingAll']);
   Route::get('/api/v1/posisi', [CareersController::class, 'addCareer']);
+  Route::get('/api/v1/posisi/{id_tree}', [CareersController::class, 'editPosisi']);
 });
 
 // jwt token
@@ -70,3 +71,4 @@ Route::get('/software-engineer/{id}', [CareersController::class, 'getSoftwareEng
 Route::get('/test2', [CareersController::class, 'searchPegawaiPosisi']);
 
 Route::get('/debug', [CareersController::class, 'addCareer']);
+Route::get('/debug2/{id_tree}', [CareersController::class, 'editPosisi']);

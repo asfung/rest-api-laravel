@@ -168,7 +168,9 @@ class CareersController extends Controller
         $id = $request->input('id_tree');
         $current_idTree = null;
         $current_idTree_forParent = null;
-
+        $current_careerCode = null; // just only for parent
+        $tree_lvl_for_parent = null; // just only for parent
+ 
         // strtoupper($name);
 
         // $isExist = CareerTest::where('name', $name)->get();
@@ -181,18 +183,41 @@ class CareersController extends Controller
             }
         }
 
-        // for parent field only
-        $forParent = CareerTest::where('parent_id', null)->get();
-        foreach($forParent as $parent){
-            $current_idTree_forParent = $parent->id;
-        }
 
         if($id === null){
+            // for parent field only
+            $forParent = CareerTest::where('parent_id', $id)->get();
+            foreach($forParent as $parent){
+                $current_idTree_forParent = $parent->id_tree;
+                $current_careerCode = $parent->career_code;
+                $tree_lvl_for_parent = $parent->tree_lvl;
+            }
+
+            // memisahkan P menjadi hanya angka 
+            $num_careerCode = substr($current_careerCode, 1);
+            $num_careerCode_increment = intval($num_careerCode) + 1; // setelah nya ditambahkan 1
+            $num_careerCode_increment = "P" . $num_careerCode_increment; // new career_code for parent
+
+            // new id_tree
+            $new_currentIdTree_parent = $current_idTree_forParent + 1;
+            $new_currentIdTree_parent_formatted = sprintf('%02d', $new_currentIdTree_parent); // new id_tree for parent 
+
+            CareerTest::create([
+                'name' => $name,
+                'career_code' => $num_careerCode_increment,
+                'tree_lvl' => $tree_lvl_for_parent,
+                'id_tree' => $new_currentIdTree_parent_formatted,
+            ]);
+
+
             return response()->json([
-                'message' => $name . ' akan dijadikan parent',
-                'current id_tree' => $current_idTree_forParent,
-                'debug' => $forParent,
-            ], 200);
+                // 'message' => $name . ' akan dijadikan parent',
+                // 'current id_tree ' . $current_idTree_forParent => 'to be ' . $new_currentIdTree_parent_formatted,
+                // 'current career code ' . $current_careerCode => $num_careerCode_increment,
+                // 'debug' => $forParent,
+                // 'tree_lvl' => $tree_lvl_for_parent,
+                'message' => 'berhasil menambahkan posisi baru'
+            ], 201);
         }
 
 
@@ -215,10 +240,6 @@ class CareersController extends Controller
             $current_idTree = $career->id_tree;
         }
 
-        //increment the id_tree
-        $nextNumber = str_pad((int) $current_idTree + 1, strlen($current_idTree), '0', STR_PAD_LEFT);
-        $id_tree_currentIncrement = sprintf('%s', $nextNumber);
-        
 
         // we need
         // career code is requirementField_career_code
@@ -227,29 +248,83 @@ class CareersController extends Controller
         // $increment_treeLvl to be tree_lvl to CareerTest or $treeLvl_toInt
         // id_tree from CareerTest will be $current_idTree + 1
 
-        // CareerTest::create([
-        //     'career_code' => $requirementField_career_code,
-        //     'name' => $name,
-        //     'parent_id' => $id,
-        //     'tree_lvl' => $treeLvl_toInt,
-        //     'id_tree' => $id_tree_currentIncrement
-        // ]);
+        //increment the id_tree if before has children
+        $nextNumber = str_pad((int) $current_idTree + 1, strlen($current_idTree), '0', STR_PAD_LEFT);
+        $id_tree_currentIncrement = sprintf('%s', $nextNumber);
+        if($current_idTree !== null){
+            CareerTest::create([
+                'career_code' => $requirementField_career_code,
+                'name' => $name,
+                'parent_id' => $id,
+                'tree_lvl' => $treeLvl_toInt,
+                'id_tree' => $id_tree_currentIncrement
+            ]);
+        }else{
+            CareerTest::create([
+                'career_code' => $requirementField_career_code,
+                'name' => $name,
+                'parent_id' => $id,
+                'tree_lvl' => $treeLvl_toInt,
+                'id_tree' => "$id" . "0" . "$id_tree_currentIncrement"
+            ]);
+        }
 
         return response()->json([
-            'debug' => $requirementField,
-            'maka' => [
-                'tipe tree_lvl ' => gettype($treeLvl_toInt),
-                'tree level sebelum ' . $treeLvl_toInt => 'jadi ' . $increment_treelvl,
-                'current id_tree of ' . $requirementField_idTree => $current_idTree,
-                'new id tree' =>  $id_tree_currentIncrement,
-                // 'saat ini ' . $current_idTree => 'yang baru ' . ++$current_idTree, it will be +2 if before has increment too
-                'parent id' => $id,
-                'career code' => $requirementField_career_code,
-                'nama' => $name
-            ]
-            // 'message' => 'berhasil menambahkan ' . $name
+            // 'debug' => $requirementField,
+            // 'maka' => [
+            //     'tipe tree_lvl ' => gettype($treeLvl_toInt),
+            //     'tree level sebelum ' . $treeLvl_toInt => 'jadi ' . $increment_treelvl,
+            //     'current id_tree of ' . $requirementField_idTree => $current_idTree,
+            //     'new id tree' =>  $id_tree_currentIncrement,
+            //     // 'saat ini ' . $current_idTree => 'yang baru ' . ++$current_idTree, it will be +2 if before has increment too
+            //     'parent id' => $id,
+            //     'career code' => $requirementField_career_code,
+            //     'nama' => $name,
+            //     'gktau' => $id_tree_currentIncrement
+            // ]
+            'message' => 'berhasil menambahkan ' . $name
+            // 'debug 2' => $id_tree_currentIncrement,
+            // 'sebelum ' => $current_idTree,
+            // 'sesudah' => "$id" . "0" . "$id_tree_currentIncrement"
 
         ], 201);
+    }
+    
+    public function editPosisi(Request $request, $id_tree){
+        $reqNewName = strtoupper($request->input('name'));
+        if(CareerTest::where('id_tree', $id_tree)->exists()){
+            $posisi = CareerTest::where('id_tree', $id_tree)->first();
+            $posisiBefore = $posisi->name;
+
+            $posisi->name = is_null($reqNewName) || $reqNewName === '' ? $posisiBefore : $reqNewName;
+            $posisi->save();
+
+            return response()->json([
+                'status' => 'berhasil',
+                'message' => 'posisi ' . $posisiBefore . ' diubah menjadi ' . $reqNewName
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'the id_tree is not found'
+            ], 404);
+        }
+    }
+
+    // delete sementara
+    public function deletePosisi(Request $request){
+        $id = $request->input('id');
+        $deleted = CareerTest::where('id_tree', $id)->first();
+
+        if($deleted !== null){
+            $deleted->delete();
+            return response()->json([
+                'message' => 'posisi berhasil di hapus'
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'posisi dengan id ' . $id  .' tidak ditemukan'
+            ], 404);
+        }
     }
 
 
