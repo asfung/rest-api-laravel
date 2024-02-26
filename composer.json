@@ -5,13 +5,13 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^7.3 || ^8.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravolt/indonesia": "^0.34.0",
-        "maatwebsite/excel": "^1.1",
+        "maatwebsite/excel": "3.1.48",
         "php-open-source-saver/jwt-auth": "^2.1"
     },
     "require-dev": {

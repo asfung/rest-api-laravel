@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         // seterah mau yang mana
         'api/v1/**',
         'api/**',
+        '**',
 
         // or
         // 'api/v1/*',

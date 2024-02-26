@@ -2,29 +2,59 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exports\PegawaiExport;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\PegawaiImport;
+use App\Imports\UserImport;
 use App\Models\Careers;
 use App\Models\CareerTest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Stmt\Foreach_;
 
 class PegawaiController extends Controller
 {
 
 
-    public function findAll(Request $request){
-        // $perPage = $request->query('pagePage', 3); 
-        // $pegawai = Pegawai::paginate($perPage);
+    // public function findAll(Request $request){
+    //     // $perPage = $request->query('pagePage', 3); 
+    //     // $pegawai = Pegawai::paginate($perPage);
     
-        // return response()->json($pegawai);
+    //     // return response()->json($pegawai);
 
-        $perPage = $request->query('pagePage', 5);  
+    //     $perPage = $request->query('pagePage', 5);  
 
-        $pegawai = Pegawai::paginate($perPage);
+    //     $pegawai = Pegawai::paginate($perPage);
+
+    //     $response = [
+    //         'current_page' => $pegawai->currentPage(),
+    //         'total_items' => $pegawai->total(),
+    //         'data' => $pegawai->items(),
+    //     ];
+
+    //     return response()->json($response);
+    // }
+
+    public function findAll(Request $request){
+        $perPage = $request->query('perPage', 5);
+
+        $query = Pegawai::query();
+
+        if ($request->has('id_posisi')) {
+            $id_posisi = $request->input('id_posisi');
+            $query->where('id_posisi', 'like' , "$id_posisi%");
+        }
+
+        if ($request->has('name')) {
+            $name = $request->input('name');
+            $query->where('nama', 'like', "%$name%");
+        }
+
+        $pegawai = $query->paginate($perPage);
 
         $response = [
             'current_page' => $pegawai->currentPage(),
@@ -33,7 +63,9 @@ class PegawaiController extends Controller
         ];
 
         return response()->json($response);
+        // return response()->json($pegawai);
     }
+
 
     public function forcingAll(){
         $pegawai = Pegawai::all();
@@ -218,6 +250,42 @@ class PegawaiController extends Controller
 
 
     // mainin export import laravel excel here
+    public function exportExcel(Request $request){
+        if ($request->has('id_posisi')) {
+            $id_posisi = $request->input('id_posisi');
+            return Excel::download(new PegawaiExport($id_posisi), 'pegawai.xlsx');
+        }
+    }
+
+    // public function importExcelPegawai(Request $request){
+    //     $request->validate([
+    //         'file' => 'required|file|mimes|xlsx,xls',
+    //     ]);
+
+    //     Excel::import(new PegawaiImport, $request->file('excel_file'));
+    //     return response()->json([
+    //         'message' => 'data imported success',
+    //     ], 201);
+
+    // }
+
+    public function importExcel(Request $request){
+        $request->validate([
+            'file' => 'required|file|mimes|xlsx,xls',
+        ]);
+
+        Excel::import(new PegawaiImport, $request->file('excel_file'));
+        return response()->json([
+            'message' => 'data imported success',
+        ], 201);
+    }
+
+
+    // user import 
+    public function importUser(Request $request){
+        Excel::import(new UserImport, $request->file('file_name'));
+        return 'berhasil';
+    }
 
 
 }
