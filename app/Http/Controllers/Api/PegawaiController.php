@@ -274,10 +274,20 @@ class PegawaiController extends Controller
             'file' => 'required|file|mimes|xlsx,xls',
         ]);
 
-        Excel::import(new PegawaiImport, $request->file('excel_file'));
+        // Excel::import(new PegawaiImport, $request->file('excel_file'));
+
+        $path = public_path('excel/import_excel.xlsx');
+        // Excel::import(new PegawaiImport, $path);
+        // Excel::import(new PegawaiImport, $request->file('excel_file'));
+        // return 'berhasil';
+
         return response()->json([
-            'message' => 'data imported success',
+            // 'message' => 'data imported success',
+            'debug' => $request->file('excel_file'),
         ], 201);
+        // return response()->json([
+        //     'message' => 'hello world'
+        // ], 200);
     }
 
 

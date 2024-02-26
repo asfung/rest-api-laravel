@@ -15,7 +15,8 @@ class PegawaiImport implements ToCollection, WithHeadingRow
     */
     public function collection(Collection $rows){
         foreach($rows as $row){
-            $career_fill_otomatis = CareerTest::where('name', strtoupper($row['posisi']))->get();
+            $career_fill_otomatis = CareerTest::where('name', strtoupper($row['posisi']))->first();
+            dump($row);
             if($career_fill_otomatis){
                 Pegawai::create([
                     'file' => $this->saveImage($row['file']),
@@ -25,9 +26,12 @@ class PegawaiImport implements ToCollection, WithHeadingRow
                     'agama' => strtoupper($row['agama']),
                     'posisi' => strtoupper($row['posisi']),
                     'gaji' => $row['gaji'],
-                    'id_posisi' => $career_fill_otomatis->id_posisi,
+                    'id_posisi' => $career_fill_otomatis->id_tree,
                     'career_code' => $career_fill_otomatis->career_code,
                 ]);
+
+                // dump($career_fill_otomatis->career_code);
+                // dump($career_fill_otomatis->id_tree);
             }else{
                 dd('career not found');
             }
@@ -36,8 +40,13 @@ class PegawaiImport implements ToCollection, WithHeadingRow
 
 
     private function saveImage($file){
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $file->storeAs('photo', $filename, 'public');
-        return $filename;
+        if($file){
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('photo', $filename, 'public');
+            return $filename;
+        }
+
+        return 'file tidak ada';
+
     }
 }
