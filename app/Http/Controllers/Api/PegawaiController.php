@@ -19,6 +19,9 @@ use PhpParser\Node\Stmt\Foreach_;
 class PegawaiController extends Controller
 {
 
+    // public function __construct() {
+    //     $this->middleware('auth:api');
+    // }
 
     // public function findAll(Request $request){
     //     // $perPage = $request->query('pagePage', 3); 
@@ -257,37 +260,15 @@ class PegawaiController extends Controller
         }
     }
 
-    // public function importExcelPegawai(Request $request){
-    //     $request->validate([
-    //         'file' => 'required|file|mimes|xlsx,xls',
-    //     ]);
-
-    //     Excel::import(new PegawaiImport, $request->file('excel_file'));
-    //     return response()->json([
-    //         'message' => 'data imported success',
-    //     ], 201);
-
-    // }
-
     public function importExcel(Request $request){
-        $request->validate([
-            'file' => 'required|file|mimes|xlsx,xls',
+        $this->validate($request, [
+            'excel_file' => 'required|file|mimes:xlsx,xls',
         ]);
 
-        // Excel::import(new PegawaiImport, $request->file('excel_file'));
-
-        $path = public_path('excel/import_excel.xlsx');
-        // Excel::import(new PegawaiImport, $path);
-        // Excel::import(new PegawaiImport, $request->file('excel_file'));
-        // return 'berhasil';
-
+        Excel::import(new PegawaiImport, $request->file('excel_file'));
         return response()->json([
-            // 'message' => 'data imported success',
-            'debug' => $request->file('excel_file'),
+            'message' => 'data imported success',
         ], 201);
-        // return response()->json([
-        //     'message' => 'hello world'
-        // ], 200);
     }
 
 

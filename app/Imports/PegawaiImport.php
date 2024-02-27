@@ -16,7 +16,7 @@ class PegawaiImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows){
         foreach($rows as $row){
             $career_fill_otomatis = CareerTest::where('name', strtoupper($row['posisi']))->first();
-            dump($row);
+            // dump($row);
             if($career_fill_otomatis){
                 Pegawai::create([
                     'file' => $this->saveImage($row['file']),
