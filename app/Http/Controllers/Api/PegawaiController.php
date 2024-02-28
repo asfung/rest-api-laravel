@@ -101,7 +101,7 @@ class PegawaiController extends Controller
         // $pegawai->provinsiId = $request->provinsiId;
         $pegawai->agama = $request->agama;
         $pegawai->gaji = $request->gaji;
-        $pegawai->posisi = $request->posisi;
+        $pegawai->posisi = $request->posisi; // pake yang foreach 2, maka line ini dicomment
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -110,17 +110,29 @@ class PegawaiController extends Controller
             $pegawai->file = $path;
         }
 
-        // $getIdPosisi = Careers::where('name', $request->posisi)->get();
         $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
         foreach($getIdPosisi as $value){
             $pegawai->id_posisi = $value->id_tree;
             $pegawai->career_code = $value->career_code;
         }
 
+
+        // untuk treeview
+        // $getIdPosisi = CareerTest::where('id_tree', $request->posisi)->get();
+        // foreach($getIdPosisi as $value){
+        //     // $pegawai->posisi = $value->name;
+        //     $pegawai->posisi = $value->name;
+        //     $pegawai->career_code = $value->career_code;
+        //     $pegawai->id_posisi = $value->id_tree;
+        // }
+
         $pegawai->save();
         return response()->json([
             'message' => 'pegawai Ditambahkan!',
-            'idk' => $getIdPosisi
+            // 'debug 1' => $getIdPosisi,
+            // 'debug 2' => $pegawai->posisi,
+            // 'debug 3' => $pegawai->career_code,
+
         ], 201);
 
     }
@@ -146,7 +158,7 @@ class PegawaiController extends Controller
             // $pegawai->provinsiId = is_null($request->provinsiId) ? $pegawai->provinsiId : $request->provinsiId;
             $pegawai->agama = is_null($request->agama) ? $pegawai->agama : $request->agama;
             $pegawai->gaji = is_null($request->gaji) ? $pegawai->gaji : $request->gaji;
-            $pegawai->posisi = is_null($request->posisi) ? $pegawai->posisi : $request->posisi;
+            $pegawai->posisi = is_null($request->posisi) ? $pegawai->posisi : $request->posisi; // ini bakalah di commment jika memakai mode treview
 
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
@@ -155,10 +167,16 @@ class PegawaiController extends Controller
                 $pegawai->file = $path;
             }
 
-            // $getIdPosisi = Careers::where('name', $request->posisi)->get();
             $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
             $pegawai->id_posisi = $getIdPosisi[0]->id_tree;
             $pegawai->career_code = $getIdPosisi[0]->career_code;
+
+            // untuk treeview
+            // $getIdPosisi = CareerTest::where('id_tree', $request->posisi)->get();
+            // $pegawai->posisi = $getIdPosisi[0]->name;
+            // $pegawai->id_posisi = $getIdPosisi[0]->id_tree;
+            // $pegawai->career_code = $getIdPosisi[0]->career_code;
+
 
             $pegawai->save();
             return response()->json([
@@ -265,9 +283,11 @@ class PegawaiController extends Controller
             'excel_file' => 'required|file|mimes:xlsx,xls',
         ]);
 
-        Excel::import(new PegawaiImport, $request->file('excel_file'));
+        $pegawaiImport = new PegawaiImport;
+        Excel::import($pegawaiImport, $request->file('excel_file'));
         return response()->json([
             'message' => 'data imported success',
+            // 'debug' => $pegawaiImport->injectDebug
         ], 201);
     }
 

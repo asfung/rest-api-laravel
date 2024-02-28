@@ -85,3 +85,5 @@ Route::get('debug4/excel', [PegawaiController::class, 'exportExcel']);
 
 Route::post('debug6/import', [PegawaiController::class, 'importUser']);
 Route::post('debug7/import', [PegawaiController::class, 'importExcel']);
+
+Route::post('add/pegawai', [PegawaiController::class, 'addPegawai']);
