@@ -6,6 +6,7 @@ use App\Http\Controllers\CareersController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\QuotesController;
 use App\Http\Controllers\Api\PegawaiController;
+use App\Http\Controllers\Api\StorageController;
 use App\Http\Controllers\WilayahIndonesiaController;
 
 /*
@@ -28,6 +29,7 @@ Route::delete('/api/v1/quotes/{id}',[QuotesController::class, 'deleteById']);
 Route::middleware('auth:api')->group(function (){
   // Route::get('/api/v1/pegawai/search',[PegawaiController::class, 'search']);
   // Route::get('/api/v1/pegawai/cari',[PegawaiController::class, 'searchPegawai']);
+  Route::get('/api/storage/{filename}', [StorageController::class, 'getImage']);
   Route::post('/api/v1/excel/pegawai/import', [PegawaiController::class, 'importExcel']);
   Route::get('/api/v1/pegawai',[PegawaiController::class, 'findAll']);
   Route::get('/api/v1/excel/pegawai', [PegawaiController::class, 'exportExcel']);
@@ -77,7 +79,7 @@ Route::get('/api/pegawai/mencari', [CareersController::class, 'searchPegawai']);
 
 // Route::get('/debug3', [PegawaiController::class, 'findAll']);
 
-// Route::get('/all/pegawais',[PegawaiController::class, 'forcingAll']);
+Route::get('/all/pegawais',[PegawaiController::class, 'forcingAll']);
 
 // excel
 Route::get('debug4/excel', [PegawaiController::class, 'exportExcel']);
@@ -87,3 +89,18 @@ Route::post('debug6/import', [PegawaiController::class, 'importUser']);
 Route::post('debug7/import', [PegawaiController::class, 'importExcel']);
 
 Route::post('add/pegawai', [PegawaiController::class, 'addPegawai']);
+// Route::get('/storage/{filename}', function ($filename) {
+//   $path = storage_path('app/public/photo/' . $filename);
+
+//   if (!File::exists($path)) {
+//       abort(404);
+//   }
+
+//   $file = File::get($path);
+//   $type = File::mimeType($path);
+
+//   $response = Response::make($file, 200);
+//   $response->header("Content-Type", $type);
+
+//   return $response;
+// });

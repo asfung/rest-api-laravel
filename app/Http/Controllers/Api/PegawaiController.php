@@ -107,7 +107,8 @@ class PegawaiController extends Controller
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('photo', $filename, 'public');
-            $pegawai->file = $path;
+            //$pegawai->file = $path;
+            $pegawai->file = $filename;
         }
 
         $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
