@@ -29,6 +29,7 @@ Route::delete('/api/v1/quotes/{id}',[QuotesController::class, 'deleteById']);
 Route::middleware('auth:api')->group(function (){
   // Route::get('/api/v1/pegawai/search',[PegawaiController::class, 'search']);
   // Route::get('/api/v1/pegawai/cari',[PegawaiController::class, 'searchPegawai']);
+  Route::get('/api/image', [StorageController::class, 'getImageBase64']);
   Route::get('/api/storage/{filename}', [StorageController::class, 'getImage']);
   Route::post('/api/v1/excel/pegawai/import', [PegawaiController::class, 'importExcel']);
   Route::get('/api/v1/pegawai',[PegawaiController::class, 'findAll']);
@@ -89,6 +90,7 @@ Route::post('debug6/import', [PegawaiController::class, 'importUser']);
 Route::post('debug7/import', [PegawaiController::class, 'importExcel']);
 
 Route::post('add/pegawai', [PegawaiController::class, 'addPegawai']);
+Route::get('/getimage', [StorageController::class, 'getImageBase64']);
 // Route::get('/storage/{filename}', function ($filename) {
 //   $path = storage_path('app/public/photo/' . $filename);
 
