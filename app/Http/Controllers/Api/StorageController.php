@@ -23,12 +23,7 @@ class StorageController extends Controller
         $response = Response::make($file, 200);
         $response->header("Content-Type", $type);
     
-        return response()->json([
-            'debug' => base64_encode($file)
-        ], 200);
-        // return $response;
-
-        // return response($file, 200)->header('Content-Type', $type);
+        return $response;
     }
 
     public function getImageBase64(Request $request){
@@ -45,11 +40,13 @@ class StorageController extends Controller
         
             $response = Response::make($file, 200);
             $response->header("Content-Type", $type);
+            return $response;
         
-            return response()->json([
-                'debug' => base64_encode($file)
-                // 'debug' => base64_encode($response)
-            ], 200);
+            // return response()->json([
+            //     'debug' => base64_encode($file)
+            //     // 'debug' => base64_encode($response)
+            // ], 200);
+
         }
     }
 
