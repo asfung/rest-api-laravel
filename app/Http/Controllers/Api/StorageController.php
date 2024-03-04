@@ -16,36 +16,36 @@ class StorageController extends Controller
         if (!File::exists($path)) {
             abort(404);
         }
-    
+
         $file = File::get($path);
         $type = File::mimeType($path);
-    
+
         $response = Response::make($file, 200);
         $response->header("Content-Type", $type);
-    
+
         return $response;
     }
 
     public function getImageBase64(Request $request){
         if($request->has('filename')){
             $filename = $request->input('filename');
-            $path = storage_path('app/public/' . $filename);
+            $path = public_path('storage/photo/' . $filename);
 
             if (!File::exists($path)) {
                 abort(404);
             }
-        
+
             $file = File::get($path);
             $type = File::mimeType($path);
-        
+
             $response = Response::make($file, 200);
             $response->header("Content-Type", $type);
             return $response;
-        
-            // return response()->json([
-            //     'debug' => base64_encode($file)
-            //     // 'debug' => base64_encode($response)
-            // ], 200);
+
+             //return response()->json([
+             //    'debug' => base64_encode($file)
+             //    // 'debug' => base64_encode($response)
+             //], 200);
 
         }
     }
