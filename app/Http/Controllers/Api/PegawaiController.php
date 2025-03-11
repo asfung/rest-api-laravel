@@ -111,7 +111,8 @@ class PegawaiController extends Controller
             $pegawai->file = $filename;
         }
 
-        $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
+        // $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
+        $getIdPosisi = Careers::where('name', $request->posisi)->get();
         foreach($getIdPosisi as $value){
             $pegawai->id_posisi = $value->id_tree;
             $pegawai->career_code = $value->career_code;
@@ -169,7 +170,8 @@ class PegawaiController extends Controller
                 $pegawai->file = $filename;
             }
 
-            $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
+            // $getIdPosisi = CareerTest::where('name', $request->posisi)->get();
+            $getIdPosisi = Careers::where('name', $request->posisi)->get();
             $pegawai->id_posisi = $getIdPosisi[0]->id_tree;
             $pegawai->career_code = $getIdPosisi[0]->career_code;
 

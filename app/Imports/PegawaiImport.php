@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Careers;
 use App\Models\Pegawai;
 use App\Models\CareerTest;
 use Illuminate\Support\Collection;
@@ -57,19 +58,20 @@ class PegawaiImport implements ToCollection, WithHeadingRow{
                 mkdir($targetDirectory, 0755, true);
             }
 
-            // $myFileName = time() . '_' . $index . '.' . $extension;
-            $myFileName = 'photo/' . time() . '_' . $index . '.' . $extension;
-            $fileFullPath = $targetDirectory . $myFileName;
+            $myFileNameDB = time() . '_' . $index . '.' . $extension;
+            $myFileNameLocation = 'photo/' . time() . '_' . $index . '.' . $extension;
+            $fileFullPath = $targetDirectory . $myFileNameLocation;
             file_put_contents($fileFullPath, $imageBinary);
 
             $this->injectDebug = mb_convert_encoding($imageBinary, 'UTF-8', 'UTF-8');
 
-            $imageFileNames[$index] = $myFileName;
+            $imageFileNames[$index] = $myFileNameDB;
             
         }
 
         foreach ($rows as $key => $row) {
-            $career_fill_otomatis = CareerTest::where('name', strtoupper($row['posisi']))->first();
+            // $career_fill_otomatis = CareerTest::where('name', strtoupper($row['posisi']))->first();
+            $career_fill_otomatis = Careers::where('name', strtoupper($row['posisi']))->first();
             // dump($row);
             if ($career_fill_otomatis) {
                 Pegawai::create([

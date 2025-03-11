@@ -51,7 +51,7 @@ class PegawaiExport implements FromCollection, WithHeadings, WithDrawings, WithE
         $drawings = [];
 
         foreach ($this->collection() as $key => $pegawai) {
-            $imagePath = public_path("/storage/{$pegawai->file}");
+            $imagePath = public_path("/storage/photo/{$pegawai->file}");
             
             if (file_exists($imagePath)) {
                 $drawing = new Drawing();

@@ -33,7 +33,8 @@ class CareersController extends Controller
     // also testing
     public function getCareers()
     {
-        $data = CareerTest::all();
+        // $data = CareerTest::all();
+        $data = Careers::all();
 
         $tree = $this->buildTree($data);
 
@@ -174,7 +175,8 @@ class CareersController extends Controller
         // strtoupper($name);
 
         // $isExist = CareerTest::where('name', $name)->get();
-        $isExist = CareerTest::all();
+        // $isExist = CareerTest::all();
+        $isExist = Careers::all();
         foreach($isExist as $exist){
             if($exist->name === $name){
                 return response()->json([

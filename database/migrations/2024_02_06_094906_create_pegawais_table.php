@@ -20,7 +20,8 @@ return new class extends Migration
             // $table->string('provinsiId');
             $table->string('agama');
             $table->string('posisi');
-            $table->integer('gaji');
+            // $table->integer('gaji');
+            $table->decimal('gaji', 65, 0); 
             $table->string('id_posisi')->nullable();
             $table->timestamps();
         });

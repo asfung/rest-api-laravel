@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\QuotesController;
 use App\Http\Controllers\Api\PegawaiController;
 use App\Http\Controllers\Api\StorageController;
 use App\Http\Controllers\WilayahIndonesiaController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Route::middleware('auth:api')->group(function (){
   Route::get('/api/v1/pegawais',[PegawaiController::class, 'forcingAll']);
   Route::get('/api/v1/posisi', [CareersController::class, 'addCareer']);
   Route::get('/api/v1/posisi/{id_tree}', [CareersController::class, 'editPosisi']);
+  Route::get('/api/careers', [CareersController::class, 'getCareers']);
 });
 
 // jwt token
@@ -59,13 +62,13 @@ Route::get('/api/villages/{id}', [WilayahIndonesiaController::class, 'villages']
 Route::get('/api/religions', [AgamaController::class, 'findAll']);
 Route::get('/api/religion/{id}', [AgamaController::class, 'findById']);
 
-Route::get('/api/careers', [CareersController::class, 'findAll']);
-Route::get('/api/career', [CareersController::class, 'findById']);
+// Route::get('/api/careers', [CareersController::class, 'findAll']);
+// Route::get('/api/career', [CareersController::class, 'findById']);
 
 Route::get('/api/careers_parent', [CareersController::class, 'findAllParent']);
 
 // beta 
-Route::get('/api/career_test', [CareersController::class, 'getCareers']);
+// Route::get('/api/career_test', [CareersController::class, 'getCareers']);
 
 Route::get('/api/pegawai/mencari', [CareersController::class, 'searchPegawai']);
 
@@ -91,18 +94,18 @@ Route::post('debug7/import', [PegawaiController::class, 'importExcel']);
 
 Route::post('add/pegawai', [PegawaiController::class, 'addPegawai']);
 Route::get('/getimage', [StorageController::class, 'getImageBase64']);
-// Route::get('/storage/{filename}', function ($filename) {
-//   $path = storage_path('app/public/photo/' . $filename);
+Route::get('/storage/{filename}', function ($filename) {
+  $path = storage_path('app/public/photo/' . $filename);
 
-//   if (!File::exists($path)) {
-//       abort(404);
-//   }
+  if (!File::exists($path)) {
+      abort(404);
+  }
 
-//   $file = File::get($path);
-//   $type = File::mimeType($path);
+  $file = File::get($path);
+  $type = File::mimeType($path);
 
-//   $response = Response::make($file, 200);
-//   $response->header("Content-Type", $type);
+  $response = Response::make($file, 200);
+  $response->header("Content-Type", $type);
 
-//   return $response;
-// });
+  return $response;
+});
